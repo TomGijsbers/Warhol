@@ -2,8 +2,8 @@
     {{-- left navigation--}}
     <div class="flex items-center space-x-2">
 {{--        Logo--}}
-                <a href="{{ route('home') }}">
-                    <x-tmk.logo class="w-8 h-8"/>
+                <a href="{{ route('home') }}" class="w-12 h-12">
+                    <x-tmk.logo/>
                 </a>
         <a class="hidden sm:block font-medium text-lg" href="{{ route('home') }}">
             Warhol's Workshop

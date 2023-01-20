@@ -21,7 +21,7 @@ return new class extends Migration
             $table->float('price', 8, 2)->default(100.999);
             $table->unsignedInteger('stock')->default(1);
             $table->timestamps();
-//            $table->string('file_path');
+//          $table->string('file_path');
         });
 
 
@@ -34,7 +34,7 @@ return new class extends Migration
                     'artist' => 'Leonardo Da Vinci',
                     'title' => 'Mona Lisa',
                     'price' => 94999.99,
-                    'file_path' => 'Mona Lisa.jpg'
+//                    'file_path' => 'Mona Lisa.jpg'
                 ],
                 [
                     'genre_id' => 11,

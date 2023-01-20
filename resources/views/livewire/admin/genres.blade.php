@@ -66,9 +66,9 @@
                             {{$orderBy === 'id' ? 'inline-block' : 'hidden'}}"/>
                 </th>
                 <th wire:click="resort('paintings_count')">
-                <span data-tippy-content="Order by # paintings">
-                    <x-tmk.logo class="w-6 block mx-auto fill-gray-200 inline-block"/>
-                </span>
+                <div data-tippy-content="Order by # paintings" class="w-8">
+                    <x-tmk.logo />
+                </div>
                     <x-heroicon-s-chevron-up
                         class="w-5 text-slate-400
                         {{$orderAsc ?: 'rotate-180'}}

@@ -10,15 +10,18 @@
 
     <form id="dalle-form">
         <div class="row">
-            <div class="col-md-12">
-                <input type="text" style="width: 96%;" id="query" placeholder="Enter a query">
-                <button id="form-btn" type="submit">Search</button>
-                <div id="spinner" style="display: none;" class="spinner-border spinner-border-sm" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
+            <div class="col-md-12 flex gap-4">
+                <x-jet-input id="query" type="text"
+                             class="block mt-1 w-full"
+                             placeholder="Enter a query"/>
+                <x-jet-button id="form-btn" type="submit">Search</x-jet-button>
+{{--                <x-jet-input type="text" style="width: 96%;" id="query" placeholder="Enter a query">--}}
+{{--                <button id="form-btn" type="submit">Search</button>--}}
             </div>
         </div>
-
+        <div id="spinner" style="display: none;" class="spinner-border spinner-border-sm" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
 
     </form>
 

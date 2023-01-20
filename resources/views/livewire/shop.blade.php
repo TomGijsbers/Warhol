@@ -79,7 +79,7 @@
                      class="flex bg-white border border-gray-300 shadow-md rounded-lg overflow-hidden">
                     <img class="w-52 h-52 border-r border-gray-300 object-cover"
 {{--                         src="/painting/{{ $painting->title }}.jpg" alt="{{ $painting->title }}"--}}
-                         src="/painting/{{ $painting->title }}.jpg" alt="{{ $painting->title }}"
+                         src="/storage/painting/{{ $painting->title }}.jpg" alt="{{ $painting->title }}"
                          alt="{{ $painting->title }}"
                          title="{{ $painting->title }}">
                     <div class="flex-1 flex flex-col">

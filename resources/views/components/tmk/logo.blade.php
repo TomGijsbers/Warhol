@@ -1,5 +1,5 @@
 <!-- License: PD. Made by Darius Dan: https://iconperk.com -->
-<svg width="64px" height="64px" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
     <title>abstract-painting-ic</title>
     <g id="abstract-painting-ic"><circle cx="28" cy="25" r="23" style="fill:#e5efef"/>
         <line x1="6" y1="7" x2="6" y2="9" style="fill:none;stroke:#4c241d;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px"/><line x1="6" y1="13" x2="6" y2="15" style="fill:none;stroke:#4c241d;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px"/>
