@@ -59,8 +59,7 @@
                         <x-jet-dropdown-link href="{{ route('admin.paintings.old') }}">Paintings (old)</x-jet-dropdown-link>
                         <x-jet-dropdown-link href="{{ route('admin.paintings') }}">Paintings</x-jet-dropdown-link>
 {{--                        <x-jet-dropdown-link href="{{ route('home') }}">Covers</x-jet-dropdown-link>--}}
-                        <x-jet-dropdown-link href="{{ route('home') }}">Users</x-jet-dropdown-link>
-                        <x-jet-dropdown-link href="{{ route('home') }}">Orders</x-jet-dropdown-link>
+                        <x-jet-dropdown-link href="{{ route('admin.users.basic') }}">Users (basic)</x-jet-dropdown-link>
                     @endif
                 </x-slot>
             </x-jet-dropdown>

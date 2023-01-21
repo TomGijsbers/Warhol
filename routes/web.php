@@ -3,6 +3,8 @@
 use App\Http\Controllers\DalleController;
 use App\Http\Livewire\Admin\Genres;
 use App\Http\Livewire\Admin\Paintings;
+use App\Http\Livewire\Admin\Users;
+use App\Http\Livewire\Admin\UsersBasic;
 use App\Http\Livewire\Shop;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PaintingsController;
@@ -33,6 +35,7 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
     Route::get('genres', Genres::class)->name('genres');
     Route::get('paintings_old', [PaintingsController::class, 'index'])->name('paintings.old');
     Route::get('paintings', Paintings::class)->name('paintings');
+    Route::get('users/basic', UsersBasic::class)->name('users.basic');
 });
 
 

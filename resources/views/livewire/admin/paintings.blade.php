@@ -55,7 +55,8 @@
             </thead>
             <tbody>
             @forelse($paintings as $painting)
-            <tr class="border-t border-gray-300">
+            <tr wire:key="painting_{{ $painting->id }}"
+                class="border-t border-gray-300">
                 <td>{{ $painting->id }}</td>
                 <td>
                     <img src="/painting/{{ $painting->title }}.jpg"
@@ -72,10 +73,13 @@
                 <td>
                     <div class="border border-gray-300 rounded-md overflow-hidden m-2 grid grid-cols-2 h-10">
                         <button
+                            wire:click="setNewPainting({{ $painting->id }})"
                             class="text-gray-400 hover:text-sky-100 hover:bg-sky-500 transition border-r border-gray-300">
                             <x-phosphor-pencil-line-duotone class="inline-block w-5 h-5"/>
                         </button>
                         <button
+                            x-data=""
+                            @click="confirm('Are you sure you want to delete this painting?') ? $wire.deletePainting{{ $painting->id }}) : ''"
                             class="text-gray-400 hover:text-red-100 hover:bg-red-500 transition">
                             <x-phosphor-trash-duotone class="inline-block w-5 h-5"/>
                         </button>
@@ -92,7 +96,7 @@
     <x-jet-dialog-modal  id="paintingModal"
                          wire:model="showModal">
         <x-slot name="title">
-            <h2>New Painting</h2>
+            <h2>{{ is_null($newPainting['id']) ? 'New painting' : 'Edit painting' }}</h2>
         </x-slot>
         <x-slot name="content">
             @if ($errors->any())
@@ -104,7 +108,8 @@
                     </x-tmk.list>
                 </x-tmk.alert>
             @endif
-            <x-jet-label for="image" value="Upload yout painting"/>
+                @if(is_null($newPainting['id']))
+            <x-jet-label for="image" value="Upload your painting"/>
             <div class="flex flex-row gap-2 mt-2">
                 <x-jet-input id="image" type="text" placeholder="Upload your own painting"
                              wire:model.defer="newPainting.image"
@@ -115,6 +120,7 @@
                     Upload your painting
                 </x-jet-button>
             </div>
+                @endif
             <div class="flex flex-row gap-4 mt-4">
                 <div class="flex-1 flex-col gap-2">
                     <p class="text-lg font-medium">{!! $newPainting['artist'] ?? '&nbsp;' !!}</p>
@@ -146,11 +152,20 @@
         </x-slot>
         <x-slot name="footer">
             <x-jet-secondary-button @click="show = false">Cancel</x-jet-secondary-button>
+            @if(is_null($newPainting['id']))
             <x-jet-button
                 wire:click="createPainting()"
                 wire:loading.attr="disabled"
                 class="ml-2">Save new painting
             </x-jet-button>
+            @else
+                <x-jet-button
+                    color="success"
+                    wire:click="updatePainting({{ $newPainting['id'] }})"
+                    wire:loading.attr="disabled"
+                    class="ml-2">Update painting
+                </x-jet-button>
+            @endif
         </x-slot>
     </x-jet-dialog-modal>
 </div>

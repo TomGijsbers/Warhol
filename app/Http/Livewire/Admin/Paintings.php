@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Admin;
 use App\Models\Painting;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Storage;
 
 class Paintings extends Component
 {
@@ -48,10 +49,24 @@ class Paintings extends Component
     ];
 
     // set/reset $newPainting and validation
-    public function setNewPainting()
+    public function setNewPainting(Painting $painting = null)
     {
         $this->resetErrorBag();
-        $this->reset('newPainting');
+        if ($painting) {
+            $this->newPainting['id'] = $painting->id;
+            $this->newPainting['artist'] = $painting->artist;
+            $this->newPainting['title'] = $painting->title;
+            $this->newPainting['image'] = $painting->image;
+            $this->newPainting['stock'] = $painting->stock;
+            $this->newPainting['price'] = $painting->price;
+            $this->newPainting['genre_id'] = $painting->genre_id;
+            $this->newPainting['cover'] =
+                Storage::disk('public')->exists('covers/' . $painting->image . '.jpg')
+                    ? '/storage/covers/' . $$painting->image . '.jpg'
+                    : '/storage/covers/no-cover.png';
+        } else {
+            $this->reset('newPainting');
+        }
         $this->showModal = true;
 
     }
@@ -65,21 +80,52 @@ class Paintings extends Component
     // create a new Painting
     public function createPainting()
     {
+        $this->validate();
+        $record = Painting::create([
+            'image' => $this->newPainting['image'],
+            'artist' => $this->newPainting['artist'],
+            'title' => $this->newPainting['title'],
+            'stock' => $this->newPainting['stock'],
+            'price' => $this->newPainting['price'],
+            'genre_id' => $this->newPainting['genre_id'],
+        ]);
+        $this->showModal = false;
+        $this->dispatchBrowserEvent('swal:toast', [
+            'background' => 'success',
+            'html' => "The painting <b><i>{$painting->title} from {$painting->artist}</i></b> has been added",
+        ]);
 
     }
 
     // update an existing Painting
-    public function updatePainting()
+    public function updatePainting(Painting $painting)
     {
-        // reset if the $search, $noCover, $noStock or $perPage property has changed (updated)
-        if (in_array($propertyName, ['search', 'noCover', 'noStock', 'perPage']))
-            $this->resetPage();
+        // update an existing record
+        $this->validate();
+        $painting->update([
+            'image' => $this->newPainting['image'],
+            'artist' => $this->newPainting['artist'],
+            'title' => $this->newPainting['title'],
+            'stock' => $this->newPainting['stock'],
+            'price' => $this->newPainting['price'],
+            'genre_id' => $this->newPainting['genre_id'],
+        ]);
+        $this->showModal = false;
+        $this->dispatchBrowserEvent('swal:toast', [
+            'background' => 'success',
+            'html' => "The painting <b><i>{$painting->title} from {$painting->artist}</i></b> has been updated",
+        ]);
     }
 
-    // delete an existing Painting
-    public function deletePainting()
-    {
 
+    // delete an existing Painting
+    public function deletePainting(Painting $painting)
+    {
+        $painting->delete();
+        $this->dispatchBrowserEvent('swal:toast', [
+            'background' => 'success',
+            'html' => "The painting <b><i>{$painting->title} from {$painting->artist}</i></b> has been deleted",
+        ]);
     }
 
     public function render()
