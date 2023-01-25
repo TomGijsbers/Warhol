@@ -59,8 +59,8 @@
                 class="border-t border-gray-300">
                 <td>{{ $painting->id }}</td>
                 <td>
-                    <img src="/painting/{{ $painting->title }}.jpg"
-                         alt="{{ $painting->title }} by {{ $painting->artist }}"
+                    <img src="{{ is_null($painting->image) ? \Storage::url("painting/$painting->title") . '.jpg' : $painting->image }}"
+                         onerror="this.onerror=null;this.src='/404.png';" alt="{{ $painting->title }} by {{ $painting->artist }}"
                          class="my-2 border object-cover">
                 </td>
                 <td>{{ $painting->price_euro }}</td>
@@ -108,62 +108,58 @@
                     </x-tmk.list>
                 </x-tmk.alert>
             @endif
-                @if(is_null($newPainting['id']))
-            <x-jet-label for="image" value="Upload your painting"/>
-            <div class="flex flex-row gap-2 mt-2">
-                <x-jet-input id="image" type="text" placeholder="Upload your own painting"
-                             wire:model.defer="newPainting.image"
-                             class="flex-1"/>
-                <x-jet-button
-                    wire:click="setNewPainting"
-                    wire:loading.attr="disabled">
-                    Upload your painting
-                </x-jet-button>
-            </div>
-                @endif
-            <div class="flex flex-row gap-4 mt-4">
-                <div class="flex-1 flex-col gap-2">
-                    <p class="text-lg font-medium">{!! $newPainting['artist'] ?? '&nbsp;' !!}</p>
-                    <input type="hidden" wire:model.defer="newPainting.artist">
-                    <p class="italic">{!! $newPainting['title'] ?? '&nbsp;' !!}</p>
-                    <input type="hidden" wire:model.defer="newPainting.name">
-{{--                    <p class="text-sm text-teal-700">{!! $newPainting['image'] ? 'MusicBrainz id: ' . $newPainting['image'] : '&nbsp;' !!}</p>--}}
-{{--                    <input type="hidden" wire:model.defer="newPainting.image">--}}
-                    <x-jet-label for="genre_id" value="Genre" class="mt-4"/>
-                    <x-tmk.form.select wire:model.defer="newPainting.genre_id" id="genre_id" class="block mt-1 w-full">
-                        <option value="">Select a genre</option>
-{{--                        @foreach($genres as $genre)--}}
-{{--                            <option value="{{ $genre->id }}">{{ $genre->name }}</option>--}}
-{{--                        @endforeach--}}
-                    </x-tmk.form.select>
 
-                    <x-jet-label for="price" value="Price" class="mt-4"/>
-                    <x-jet-input id="price" type="number" step="0.01"
-                                 wire:model.defer="newPainting.price"
-                                 class="mt-1 block w-full"/>
-                    <x-jet-label for="stock" value="Stock" class="mt-4"/>
-                    <x-jet-input id="stock" type="number"
-                                 wire:model.defer="newPainting.stock"
-                                 class="mt-1 block w-full"/>
+                <div class="flex flex-row gap-4 mt-4">
+                    <div class="flex-1 flex-col gap-2">
+                        <x-jet-label for="title" value="Title" class="mt-4" />
+                        <x-jet-input id="title" type="text" wire:model.defer="newPainting.title"
+                                     class="mt-1 block w-full" placeholder="Title" />
 
+                        <x-jet-label for="genre_id" value="Genre" class="mt-4" />
+                        <x-tmk.form.select wire:model.defer="newPainting.genre_id" id="genre_id" class="block mt-1 w-full">
+                            <option value="">Select a genre</option>
+                            @foreach ($genres as $genre)
+                                <option value="{{ $genre->id }}">{{ $genre->name }}</option>
+                            @endforeach
+                        </x-tmk.form.select>
+
+                        <x-jet-label for="price" value="Price" class="mt-4" />
+                        <x-jet-input id="price" type="number" step="0.01" wire:model.defer="newPainting.price"
+                                     class="mt-1 block w-full" placeholder="Price" />
+
+                        <x-jet-label for="artist" value="Artist" class="mt-4" />
+                        <x-jet-input id="artist" type="text" wire:model.defer="newPainting.artist"
+                                     class="mt-1 block w-full" placeholder="Artist" />
+
+                        <x-jet-label for="stock" value="Stock" class="mt-4" />
+                        <x-jet-input id="stock" type="number" wire:model.defer="newPainting.stock"
+                                     class="mt-1 block w-full" placeholder="Stock" />
+
+                        <x-jet-label for="image" class="mt-2" value="Upload your painting" />
+                        <div class="flex flex-row gap-2 mt-4">
+                            <x-jet-input id="image" type="file" placeholder="Upload your own painting"
+                                         wire:model.defer="newPainting.image" class="flex-1" />
+                            <div class="mt-2" wire:loading wire:target="newPainting.image">
+                                Uploading Image...
+                            </div>
+                        </div>
+                    </div>
+
+                    @if ($newPainting['image'])
+                        <img src="{{ $newPainting['image'] }}" alt="New Image"
+                             class="mt-4 w-40 h-40 border border-gray-300 object-cover">
+                    @endif
                 </div>
-                <img src="{{ $newPainting['image'] }}" alt="" class="mt-4 w-40 h-40 border border-gray-300 object-cover">
-            </div>
         </x-slot>
         <x-slot name="footer">
             <x-jet-secondary-button @click="show = false">Cancel</x-jet-secondary-button>
-            @if(is_null($newPainting['id']))
-            <x-jet-button
-                wire:click="createPainting()"
-                wire:loading.attr="disabled"
-                class="ml-2">Save new painting
-            </x-jet-button>
+            @if (is_null($newPainting['id']))
+                <x-jet-button wire:click="createPainting()" wire:loading.attr="disabled" class="ml-2">Save new
+                    painting
+                </x-jet-button>
             @else
-                <x-jet-button
-                    color="success"
-                    wire:click="updatePainting({{ $newPainting['id'] }})"
-                    wire:loading.attr="disabled"
-                    class="ml-2">Update painting
+                <x-jet-button color="success" wire:click="updatePainting({{ $newPainting['id'] }})"
+                              wire:loading.attr="disabled" class="ml-2">Update painting
                 </x-jet-button>
             @endif
         </x-slot>

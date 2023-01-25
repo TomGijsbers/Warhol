@@ -2,16 +2,19 @@
 
 namespace App\Http\Livewire\Admin;
 
+use App\Models\Genre;
 use App\Models\Painting;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 use Storage;
 
 class Paintings extends Component
 {
 
-    use WithPagination;
+    use WithPagination, WithFileUploads;
     // filter and pagination
+    public $genres;
     public $search;
     public $noStock = false;
     public $noCover = false;
@@ -30,11 +33,16 @@ class Paintings extends Component
         'cover' => '/storage/covers/no-cover.png',
     ];
 
+    public function mount()
+    {
+        $this->genres = Genre::all();
+    }
+
     // validation rules (use the rules() method, not the $rules property)
     protected function rules()
     {
         return [
-            'newPainting.image' => 'required|size:36|unique:paintings,' . $this->newPainting['id'],
+            'newPainting.image' => 'required',
             'newPainting.artist' => 'required',
             'newPainting.title' => 'required',
             'newPainting.genre_id' => 'required|exists:genres,id',
@@ -44,9 +52,7 @@ class Paintings extends Component
     }
 
     // validation attributes
-    protected $validationAttributes = [
-
-    ];
+    protected $validationAttributes = [];
 
     // set/reset $newPainting and validation
     public function setNewPainting(Painting $painting = null)
@@ -61,19 +67,22 @@ class Paintings extends Component
             $this->newPainting['price'] = $painting->price;
             $this->newPainting['genre_id'] = $painting->genre_id;
             $this->newPainting['cover'] =
-                Storage::disk('public')->exists('covers/' . $painting->image . '.jpg')
-                    ? '/storage/covers/' . $$painting->image . '.jpg'
-                    : '/storage/covers/no-cover.png';
+                Storage::disk('public')->exists('painting/' . $painting->image . '.jpg')
+                    ? '/storage/painting/' . $painting->image . '.jpg'
+                    : '/storage/painting/no-cover.png';
         } else {
             $this->reset('newPainting');
         }
         $this->showModal = true;
-
     }
 
     // reset the paginator
     public function updated($propertyName, $propertyValue)
     {
+        if ($propertyName == 'newPainting.image') {
+            $this->newPainting['image'] = '/storage/' . $this->newPainting['image']->store('painting', 'public');
+        }
+
         $this->resetPage();
     }
 
@@ -81,7 +90,7 @@ class Paintings extends Component
     public function createPainting()
     {
         $this->validate();
-        $record = Painting::create([
+        $painting = Painting::create([
             'image' => $this->newPainting['image'],
             'artist' => $this->newPainting['artist'],
             'title' => $this->newPainting['title'],
